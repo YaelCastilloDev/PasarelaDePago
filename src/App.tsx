@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-// 1. Interfaces (Requerido por la rúbrica de Juxa)
+// 1. Interfaces 
 export interface CardData {
   cardholderName: string;
   cardNumber: string;
@@ -39,6 +39,25 @@ export default function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [paymentMessage, setPaymentMessage] = useState('');
+
+
+  
+  //  Recuperar el nombre guardado al cargar la página por primera vez
+  useEffect(() => {
+    const savedName = localStorage.getItem('juxa_cardholder_name');
+    if (savedName) {
+      setCardData(prevData => ({ ...prevData, cardholderName: savedName }));
+    }
+  }, []); 
+
+  //  Guardar el nombre automáticamente cada vez que el usuario lo modifique
+  useEffect(() => {
+    // Solo guardamos si hay texto (evita guardar strings vacíos si borran el input)
+    if (cardData.cardholderName.trim() !== '') {
+      localStorage.setItem('juxa_cardholder_name', cardData.cardholderName);
+    }
+  }, [cardData.cardholderName]); 
+
 
   // --- FUNCIONES DE FORMATEO ---
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,22 +101,22 @@ export default function App() {
     );
   };
 
-// --- LÓGICA DE SIMULACIÓN (2 SEGUNDOS) ---
+// --- Simulacion de pago ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Evita que la página se recargue
 
-    // 1. Iniciamos el estado de carga
+    //  Iniciamos el estado de carga
     setIsSubmitting(true);
     setPaymentStatus('idle');
     setPaymentMessage('');
 
-    // 2. Simulamos la espera de 2 segundos exactos
+    //  Simulamos la espera de 2 segundos exactos
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    // 3. Generamos un éxito o error aleatorio (50/50 de probabilidad)
+    // Generamos un éxito o error aleatorio (50/50 de probabilidad)
     const isSuccess = Math.random() > 0.5;
 
-    // 4. Terminamos la carga y mostramos el resultado
+    //  Terminamos la carga y mostramos el resultado
     setIsSubmitting(false);
     
     if (isSuccess) {
