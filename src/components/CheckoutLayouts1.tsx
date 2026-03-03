@@ -2,6 +2,8 @@
 
 import React from 'react'
 
+// --- PASO 2: DEFINICIÓN DE INTERFACES  ---
+// Define la estructura estricta de los datos de la tarjeta
 export interface CardData {
   cardholderName: string;
   cardNumber: string;
@@ -9,13 +11,13 @@ export interface CardData {
   cvc: string;
 }
 
-// posibles estados de la transacción
+// Define los posibles estados de la transacción
 export interface PaymentState {
   status: 'idle' | 'loading' | 'success' | 'error';
   message: string;
 }
 
-// Interfaces de la UI 
+// Interfaces de la UI que ya tenías
 interface OrderSummaryItem {
   label: string
   value: string
@@ -55,7 +57,7 @@ export const CheckoutLayouts1: React.FC<CheckoutLayouts1Props> = ({
 
           <form onSubmit={(e) => e.preventDefault()}>
             
-            {}
+            {/* --- PASO 1: FORMULARIO LIMPIO SOLO CON DATOS DE TARJETA  --- */}
             <fieldset className="mb-8">
               <legend className="text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-200">
                 {paymentSectionTitle}
@@ -154,18 +156,3 @@ export const CheckoutLayouts1: React.FC<CheckoutLayouts1Props> = ({
     </section>
   )
 }
-
-
-/*
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
-
-*/
