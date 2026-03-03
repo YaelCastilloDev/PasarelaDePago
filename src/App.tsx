@@ -1,10 +1,14 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css' // Importante para que Tailwind cargue
+// src/App.tsx
+import React from 'react';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+function App() {
+  return (
+    <div className="min-h-screen bg-gray-100">
+      {/* Aquí irá tu formulario de Juxa Pro */}
+      <h1>Checkout Juxa Pro</h1>
+    </div>
+  );
+}
+
+// ESTA ES LA LÍNEA QUE PROBABLEMENTE FALTA:
+export default App; 
