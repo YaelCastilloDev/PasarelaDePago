@@ -36,6 +36,10 @@ export default function App() {
   const [errors, setErrors] = useState<Partial<CardData>>({});
   const [cardType, setCardType] = useState<'visa' | 'mastercard' | 'amex' | null>(null);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [paymentMessage, setPaymentMessage] = useState('');
+
   // --- FUNCIONES DE FORMATEO ---
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, ''); 
@@ -78,6 +82,34 @@ export default function App() {
     );
   };
 
+// --- LÓGICA DE SIMULACIÓN (2 SEGUNDOS) ---
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Evita que la página se recargue
+
+    // 1. Iniciamos el estado de carga
+    setIsSubmitting(true);
+    setPaymentStatus('idle');
+    setPaymentMessage('');
+
+    // 2. Simulamos la espera de 2 segundos exactos
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    // 3. Generamos un éxito o error aleatorio (50/50 de probabilidad)
+    const isSuccess = Math.random() > 0.5;
+
+    // 4. Terminamos la carga y mostramos el resultado
+    setIsSubmitting(false);
+    
+    if (isSuccess) {
+      setPaymentStatus('success');
+      setPaymentMessage('¡Pago procesado con éxito! Bienvenido a Juxa Pro.');
+    } else {
+      setPaymentStatus('error');
+      setPaymentMessage('Fondos insuficientes o tarjeta declinada. Intenta de nuevo.');
+    }
+  };
+
+
   return (
     <section className="bg-white dark:bg-gray-950 py-16 md:py-24 min-h-screen">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -87,8 +119,8 @@ export default function App() {
             <p className="text-gray-500 dark:text-gray-400">{subtitle}</p>
           </div>
 
-          <form onSubmit={(e) => e.preventDefault()}>
-            <fieldset className="mb-8">
+          <form onSubmit={handleSubmit}>
+              <fieldset className="mb-8">
               <legend className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{paymentSectionTitle}</legend>
               <div className="space-y-4">
                 <input
@@ -137,9 +169,39 @@ export default function App() {
               ))}
             </div>
 
-            <button type="submit" className="w-full bg-indigo-600 text-white py-4 rounded-lg hover:bg-indigo-700 font-medium">
-              {submitButtonText}
+{/* BOTÓN CON ESTADO DE CARGA */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-full py-4 rounded-lg flex items-center justify-center gap-2 font-medium text-white transition-all duration-200 ${
+                isSubmitting 
+                  ? 'bg-indigo-400 cursor-not-allowed' 
+                  : 'bg-indigo-600 hover:bg-indigo-700'
+              }`}
+            >
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Procesando el pago...
+                </>
+              ) : (
+                submitButtonText
+              )}
             </button>
+
+            {/* MENSAJE DE ÉXITO O ERROR */}
+            {paymentStatus !== 'idle' && (
+              <div className={`mt-4 p-4 rounded-lg text-center font-medium ${
+                paymentStatus === 'success' 
+                  ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
+                  : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+              }`}>
+                {paymentMessage}
+              </div>
+            )}
           </form>
         </article>
       </div>
