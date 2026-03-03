@@ -1,11 +1,10 @@
-import { CheckoutLayouts1 } from './components/CheckoutLayouts1'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.tsx'
+import './index.css' // Importante para que Tailwind cargue
 
-function App() {
-  return (
-    <div className="min-h-screen bg-gray-100">
-      <CheckoutLayouts1 />
-    </div>
-  )
-}
-
-export default App
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
